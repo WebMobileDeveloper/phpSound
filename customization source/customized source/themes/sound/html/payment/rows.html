@@ -1,0 +1,306 @@
+<div class="page-header">{$lng->payment}-Page</div>
+
+
+<div class="page-inner">
+    <div class="page-input-container">
+        <div class="stats-container three columns">
+            {$lng->earnings}
+            <h3>${$earnings}</h3>
+        </div>
+        <div class="stats-container three columns">
+            {$lng->available}
+            <h3 >$<span id="available">{$available}</span></h3>
+        </div>
+        <div class="stats-container three columns">
+            {$lng->pending}
+            <h3>${$pending}</h3>
+        </div>
+        <div class="stats-container three columns">
+            {$lng->paid}
+            <h3>${$paid}</h3>
+        </div>
+    </div>
+</div>
+<div class="divider"></div>
+<div class="page-inner">
+    <div class="edit-menu">
+        <div class="edit-menu-item edit-menu-item-active" id="stats-tracks">{$lng->claim}</div>
+        <div class="edit-menu-item" id="stats-users">Claim history</div>
+        <div class="edit-menu-item" id="stats-geographic">Earning history</div>
+    </div>
+
+    <div class="stats-tracks" style="display: block;">
+        {$message}
+        <div class="page-input-container" {$show_flag}>
+            <div class="stats-container twelve columns">
+                <div class="stats-column-title">{$lng->claim} details&emsp;&emsp;
+                    <input type="radio" name="type" id="paypalRadio" value="paypal" checked>Paypal&emsp;
+                    <input type="radio" name="type" value="bank"> Bank
+                </div>
+
+                <form id="paypalform">
+                    <div class="page-input-container" id="paypal">
+                        <div class="page-input-title">{$lng->ttl_email}</div>
+                        <div class="page-input-content">
+                            <input type="hidden" name="type" value="paypal">
+                            <input type="text" name="email" value="{$currentEmail}"/>
+                            <div class="page-input-sub">Input your paypal email</div>
+                        </div>
+                        <div class="page-input-container">
+                            <div class="page-input-title">billing amount</div>
+                            <div class="page-input-content">
+                                <input type="text" name="billingAmount" id="billingAmount" value=""/>
+                                <div class="page-input-sub">Input your billing amount<br>we take 10% for transfer fee.</div>
+                            </div>
+                        </div>
+                        <div class="page-inner">
+                            <div class="page-input-title"></div>
+                            <input type="submit" id="paypalformSubmit" value="{$lng->send}"/>
+                        </div>
+                        <input type="hidden" name="uid" value="{$uid}">
+                    </div>
+                </form>
+
+                <form id="bankform">
+                    <div id="bank" style="display: none;">
+
+                        <div class="page-input-container">
+                            <div class="page-input-title">Bank name</div>
+                            <div class="page-input-content">
+                                <input type="text" name="bankName" value=""/>
+                                <div class="page-input-sub">Input your bank name</div>
+                            </div>
+                        </div>
+
+                        <div class="page-input-container">
+                            <div class="page-input-title">Bank account number</div>
+                            <div class="page-input-content">
+                                <input type="text" name="BankAccountNumber" value=""/>
+                                <div class="page-input-sub">Input your Bank account number</div>
+                            </div>
+                        </div>
+
+                        <div class="page-input-container">
+                            <div class="page-input-title">Bank account name</div>
+                            <div class="page-input-content">
+                                <input type="text" name="BankAccountName" value=""/>
+                                <div class="page-input-sub">Input your Bank account name</div>
+                            </div>
+                        </div>
+
+                        <div class="page-input-container">
+                            <div class="page-input-title">Account type</div>
+                            <div class="page-input-content">
+                                <select name="accountType">
+                                    <option value="Savings">Savings</option>
+                                    <option value="Current">Current</option>
+                                </select>
+                                <div class="page-input-sub">Select your Account type</div>
+                            </div>
+                        </div>
+
+                        <div class="page-input-container">
+                            <div class="page-input-title">Additional info(optional)</div>
+                            <div class="page-input-content">
+                                <input type="text" name="AdditonalInfo" value=""/>
+                                <div class="page-input-sub">Input your additional information(optional)</div>
+                            </div>
+                        </div>
+
+                        <div class="page-input-container">
+                            <div class="page-input-title">billing amount</div>
+                            <div class="page-input-content">
+                                <input type="text" name="billingAmount" id="billingAmount1" value=""/>
+                                <div class="page-input-sub">Input your billing amount<br>we take 10% for transfer fee.</div>
+                            </div>
+                        </div>
+                        <div class="page-inner">
+                            <div class="page-input-title"></div>
+                            <input type="submit" id="bankformSubmit" value="{$lng->send}"/>
+                        </div>
+                        <input type="hidden" id="uid" name="uid" value="{$uid}">
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+        <div class="page-input-container">
+            You will be paid 20 ~ 25 days after the billing date.
+        </div>
+
+    </div>
+
+    <style>
+        table tr{
+            height: 40px;
+        }
+    </style>
+    <div class="stats-users" style="display: none;">
+        <div class="page-input-container">
+            <div class="stats-container twelve columns">
+                <div class="stats-column-title">Claim history</div>
+                {$claims}
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-geographic" style="display: none;">
+        <div class="page-input-container">
+            <div class="stats-column-title">Earning history</div>
+            <table style="text-align: center;">
+                <thead>
+                    <th>Terms</th>
+                    <th>earnings($)</th>
+                    <!--<th>Plays</th>-->
+                </thead>
+                <tbody>
+                    <tr><td width="300px">Today</td><td width="300px">{$earnings_today}</td><!--<td width="300px">{$plays_today}</td>--></tr>
+                    <tr><td>Week</td><td>{$earnings_week}</td><!--<td>{$plays_week}</td>--></tr>
+                    <tr><td>Month</td><td>{$earnings_month}</td><!--<td>{$plays_month}</td>--></tr>
+                    <tr><td>So far</td><td>{$earnings_total}</td><!--<td>{$plays_total}</td>--></tr>
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="small-info"></div>
+    <input type="hidden" id="minimum" value="{$minimum}">
+
+</div>
+<script>
+
+    $(function () {
+        $("[name=billingAmount]").change(function () {
+            $(this).val(Math.round(Number($(this).val())));
+        });
+        $(".delete-button").click(function () {
+            var bill=Number($(this).attr("bill"))*1000000;
+            var status=$(this).attr('status');
+            var uid=Number($("#uid").val());
+            var rowId=Number($(this).attr('rowId'));
+
+            /*var row=$(this).parent().parent();
+            console.log(row);*/
+
+
+            if(confirm("Are you sure delete selected row?")){
+                $.ajax({
+                    method: "post",
+                    dataType: 'json',
+                    url: "requests/deleteClaim.php",
+                    data: {bill:bill, status:status, uid:uid, rowId:rowId},
+                    success: function (result) {
+                        alert("Selected row has been delete successfully!");
+                        location.reload();
+                    }
+                });
+            }
+        });
+        $("input[name='type']").click(function () {
+            if ($(this).val() == 'bank') {
+                $("div#paypal").hide();
+                $("div#bank").show();
+            } else {
+                $("div#paypal").show();
+                $("div#bank").hide();
+            }
+        });
+
+
+
+        $("input#paypalformSubmit").click(function (e) {
+            e.preventDefault();
+            if(!$("#paypalform").valid()){
+                $("#paypalform").valid();
+
+                return false;
+            }
+            console.log(Number($("#billingAmount").val()));
+            console.log(Number($("#available").html()));
+            if(Number($("#billingAmount").val())>Number($("#available").html())){
+                alert("Billing amount can't bigger than available amount!\n try again.");
+
+                return false;
+            }
+            if (confirm("Are you sure you want to claim?")) {
+                $.ajax({
+                    method: "post",
+                    dataType: 'json',
+                    url: "requests/saveClaim.php",
+                    data: $("#paypalform").serializeArray(),
+                    success: function (result) {
+                        alert("Your request has been sent successfully!");
+                        location.reload();
+                    }
+                });
+            }
+
+        });
+
+        $("input#bankformSubmit").click(function (e) {
+            e.preventDefault();
+            if(!$("#bankform").valid()){
+                $("#bankform").valid(); return false;
+            }
+            console.log(Number($("#billingAmount1").val()));
+            console.log(Number($("#available").html()));
+            if(Number($("#billingAmount1").val())>Number($("#available").html())){
+                alert("Billing amount can't bigger than available amount! \n try again.");
+                return;
+            }
+
+            if (confirm("Are you sure you want to claim?")) {
+                $.ajax({
+                    method: "post",
+                    dataType: 'json',
+                    url: "requests/saveClaim.php",
+                    data: $("#bankform").serializeArray(),
+                    success: function (result) {
+                        alert("Your request has been sent successfully!");
+                        location.reload();
+                    }
+                });
+            }
+
+        });
+
+
+        $("#paypalform").validate({
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                },
+                billingAmount: {
+                    required:true,
+                    number:true
+                }
+            },
+            messages: {
+                email: "Please enter email.",
+                billingAmount: "Please enter billingAmount."
+            },
+            errorPlacement: function (error, element) {
+            }
+        });
+        $("#bankform").validate({
+            rules: {
+                bankName:"required",
+                BankAccountNumber:"required",
+                BankAccountName:"required",
+                bankName:"required",
+                billingAmount: {
+                    required:true,
+                    number:true
+                }
+            },
+            errorPlacement: function (error, element) {
+            }
+        });
+    });
+</script>

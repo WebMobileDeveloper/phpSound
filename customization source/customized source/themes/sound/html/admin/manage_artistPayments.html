@@ -1,0 +1,196 @@
+<style>
+    tr {
+        height: 40px;
+    }
+
+    thead tr {
+        background: #BBB
+    }
+
+    tbody tr:nth-child(4n+1) {
+        background: #EEE
+    }
+
+    tbody tr:nth-child(4n+2) {
+        background: #EEE
+    }
+    #dialog {
+        display:none;
+    }
+    #dialog input{
+        width:150px;
+    }
+    #dialog span{
+        width:250px;
+    }
+    #dialog-table td{
+        background-color: rgba(224, 224, 224, 0.71);
+    }
+</style>
+
+{$message}
+<div class="page-inner">
+    <div class="stats-column-title">Manage artist payment</div>
+    <br>
+    <div class="edit-menu">
+        <div class="edit-menu-item edit-menu-item-active" id="edit-general">Pendings</div>
+        <div class="edit-menu-item" id="edit-registration">Paids</div>
+        <div class="edit-menu-item" id="edit-limits">Declineds</div>
+        <div class="edit-menu-item" id="edit-emails">Earnings</div>
+    </div>
+    <div class="edit-general" style="display: block;">
+        <div class="page-inner" style="padding-top: 0;">
+            <div class="page-input-container"
+                 style="overflow-y: auto; max-height: 550px; border-style: solid !important; border-width: 1px;">
+                {$claims}
+            </div>
+        </div>
+    </div>
+    <div class="edit-registration" style="display: none;">
+        <div class="page-inner" style="padding-top: 0;">
+            <div class="page-input-container"
+                 style="overflow-y: auto; max-height: 550px; border-style: solid !important; border-width: 1px;">
+                {$Success}
+            </div>
+        </div>
+    </div>
+    <div class="edit-limits" style="display: none;">
+        <div class="page-inner" style="padding-top: 0;">
+            <div class="page-input-container"
+                 style="overflow-y: auto; max-height: 550px; border-style: solid !important; border-width: 1px;">
+                {$Decline}
+            </div>
+        </div>
+    </div>
+    <div class="edit-emails" style="display: none;">
+        <div class="page-inner" style="padding-top: 0;">
+            <div class="page-input-container"
+                 style="overflow-y: auto; max-height: 550px; border-style: solid !important; border-width: 1px;">
+                {$Earnings}
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="divider"></div>
+<div class="list-content">
+    {$payments}
+    <div id="payments"></div>
+</div>
+
+
+<div id="dialog" title="User Details">
+    <table id="dialog-table">
+        <tr><td><span>Name&emsp;:&emsp;</span></td><td><input type="text" id="user_name" value="" readonly></td></tr>
+        <tr><td><span>Email&emsp;:&emsp;</span></td><td><input type="text" id="user_email" value="" readonly></td></tr>
+        <tr><td><span>Earnings&emsp;:&emsp;</span></td><td><input type="text" id="user_earnings" value="" ></td></tr>
+        <tr><td><span>Available&emsp;:&emsp;</span></td><td><input type="text" id="user_available" value="" readonly></td></tr>
+        <tr><td><span>Pending&emsp;:&emsp;</span></td><td><input type="text" id="user_pending" value="" ></td></tr>
+        <tr><td><span>Paid&emsp;:&emsp;</span></td><td><input type="text" id="user_paid" value="" readonly></td></tr>
+        <tr><td><span>Active&emsp;:&emsp;</span></td><td><input type="checkbox" id="user_active" ></td></tr>
+    </table><br>
+    <button class="formSaver">Save</button>
+    <input type="hidden" id="user_id" value="">
+</div>
+
+<!--<button id="opener">Open Dialog</button>-->
+
+
+<script>
+    $(function () {
+        $(".like-button").click(function () {
+            var bill = Number($(this).attr("bill")) * 1000000;
+            var uid = Number($(this).attr('uid'));
+            var rowId = Number($(this).attr('rowId'));
+            console.log(bill, uid, rowId);
+            if (confirm("Are you sure pay for selected row?")) {
+                $.ajax({
+                    method: "post",
+                    dataType: 'json',
+                    url: "requests/processPayment.php",
+                    data: {bill: bill, status: status, uid: uid, rowId: rowId, type: 'Success'},
+                    success: function (result) {
+                        alert("Selected billing has been paid successfully!");
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+        $(".delete-button").click(function () {
+            var bill = Number($(this).attr("bill")) * 1000000;
+            var uid = Number($(this).attr('uid'));
+            var rowId = Number($(this).attr('rowId'));
+            console.log(bill, uid, rowId);
+            if (confirm("Are you sure decline for selected row?")) {
+                $.ajax({
+                    method: "post",
+                    dataType: 'json',
+                    url: "requests/processPayment.php",
+                    data: {bill: bill, status: status, uid: uid, rowId: rowId, type: 'Decline'},
+                    success: function (result) {
+                        alert("Selected billing has been declined!");
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+        $(".button-edit").click(function () {
+            $("#user_name").val($(this).attr("username"));
+            $("#user_email").val($(this).attr("useremail"));
+            $("#user_earnings").val($(this).attr("earnings"));
+            $("#user_available").val($(this).attr("available"));
+            $("#user_pending").val($(this).attr("pending"));
+            $("#user_id").val($(this).attr("uid"));
+            $("#user_paid").val($(this).attr("paid"));
+
+            if($(this).attr("active")=='active'){
+                $("#user_active").attr('checked', 'checked');
+            }else{
+                $("#user_active").removeAttr('checked', 'checked');
+            }
+            $("#dialog").dialog("open");
+        });
+
+        $("#dialog").dialog({
+            autoOpen: false,
+            show: {
+                effect: "blind",
+                duration: 300
+            },
+            hide: {
+                effect: "explode",
+                duration: 500
+            }
+        });
+
+
+        //When the button in the form is clicked, take the input value and set that as the value of `.myTarget`
+        $('.formSaver').on('click', function () {
+            earnings=$("#user_earnings").val();
+            pending=$("#user_pending").val();
+            uid=$("#user_id").val();
+
+            if($( "#user_active" ).prop( "checked")){
+                active='active';
+            }else{
+                active='block';
+            }
+            if (confirm("Are you sure change details of this user?")) {
+                $.ajax({
+                    method: "post",
+                    dataType: 'json',
+                    url: "requests/changeUserDetails.php",
+                    data: {earnings: earnings, pending: pending, uid: uid, active: active},
+                    success: function (result) {
+                        //alert("User details has been changed successfully!");
+                        $("#dialog").dialog('close');
+                        location.reload();
+                    }
+                });
+            }
+
+        });
+    });
+</script>

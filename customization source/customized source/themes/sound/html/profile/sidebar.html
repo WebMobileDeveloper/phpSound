@@ -1,0 +1,26 @@
+{$about}
+{$sidebar}
+{$dates}
+{$ad}
+<script>	
+
+    $(document).ready(function () {
+        var adContent="<ins class='adsbygoogle' style='display:block' data-ad-client='ca-pub-4108579234891667' data-ad-slot='7038199238' data-ad-format='auto'></ins>";
+        
+        function add_adsense(n){
+            var i=0;
+            $(".song-container").each(function(){
+                i++;
+                if(i%n==0){
+                    $(this).append(adContent);
+                }
+                
+            });
+        }
+        
+        add_adsense(2);
+        [].forEach.call(document.querySelectorAll('.adsbygoogle'), function(){
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        });
+    });
+</script>
